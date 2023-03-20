@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour {
     [SerializeField]
@@ -10,11 +11,15 @@ public class PlayerMovement : MonoBehaviour {
     private Rigidbody2D RB;
     [SerializeField]
     private GameObject nextObject;
+    [SerializeField]
+    private RoundController roundController;
     private Node nextNode;
     private Vector3 nextPosition;
     private Vector3 nextPositionNormalized;
     [SerializeField]
-    private int nextDirection = (int)directions.left;
+    private int nextDirection = (int)directions.left
+        , curLevel = 0;
+    bool isPaused = false;
     private enum directions {
         noDir = -1,
         up,
@@ -28,6 +33,9 @@ public class PlayerMovement : MonoBehaviour {
         nextPositionNormalized = (transform.position - nextPosition).normalized;
     }
     void Update() {
+        if (Input.GetKeyDown("r"))
+            SceneManager.LoadScene(curLevel);
+        if (isPaused) return;
         if (Input.GetKeyDown("w"))
             nextDirection = (int) directions.up;
         if (Input.GetKeyDown("s"))
@@ -54,11 +62,20 @@ public class PlayerMovement : MonoBehaviour {
             }
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.tag == "food") {
+            Destroy(collision.gameObject);
+            roundController.fadeNextIn();
+        }
+    }
     private void lose() {
-        Debug.Log("you died");
         nextDirection = (int) directions.noDir;
+        isPaused = true;
+        if (roundController.isWin())
+            Debug.Log("you win!");
+        else 
+            Debug.Log("you died");
         //death noise
         //death animation
-        //restart level quickly
     }
 }

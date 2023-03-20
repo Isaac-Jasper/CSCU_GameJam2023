@@ -35,12 +35,12 @@ public class Node : MonoBehaviour
     public bool isWall() {
         return tileType == TileType.wallTile;
     }
-
-
-    //for setting up colliders
-    /*
     private void OnTriggerEnter2D(Collider2D collision) {
-        string dir = collision.name;
+        if (collision.tag == "Wall") {
+            tileType = TileType.wallTile;
+        }
+
+        /* string dir = collision.name;
         switch (dir) {
             case "Down":
                 upNode = collision.transform.parent.gameObject;
@@ -54,6 +54,6 @@ public class Node : MonoBehaviour
             case "Left":
                 rightNode = collision.transform.parent.gameObject;
                 break;
-        }
-    } */
+        } */
+    }
 }
