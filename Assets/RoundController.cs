@@ -22,11 +22,7 @@ public class RoundController : MonoBehaviour
         float color = 0;
         while (color < 1) {
             color += fadeInSpeed;
-            for (int i = -20; i < 20; i++) {
-                for (int j = -20; j < 20; j++) {
-                    tilemap.SetColor(new Vector3Int(i, j, 0), new Color(1, 1, 1, color));
-                }
-            }
+            tilemap.color = new Color(1, 1, 1, color);
             yield return new WaitForSeconds(time);
         }
     }
