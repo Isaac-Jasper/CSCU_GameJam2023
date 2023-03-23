@@ -28,6 +28,7 @@ public class RoundController : MonoBehaviour
     private IEnumerator fadeNextIn(GameObject round) {
         Tilemap tilemap = round.GetComponent<Tilemap>();
         float color = 0;
+        SoundManager.PlaySound(SoundManager.Sound.Level_NextRound);
         while (color < 1) {
             color += fadeInSpeed;
             tilemap.color = new Color(1, 1, 1, color);
@@ -57,7 +58,7 @@ public class RoundController : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         while (textFadeGroup.alpha > 0.05) {
-            textFadeGroup.alpha = Mathf.Lerp(textFadeGroup.alpha, 0, transitionSpeed / 10 * Time.deltaTime);
+            textFadeGroup.alpha = Mathf.Lerp(textFadeGroup.alpha, 0, transitionSpeed / 5 * Time.deltaTime);
             yield return null;
         }
         textFadeGroup.alpha = 0;

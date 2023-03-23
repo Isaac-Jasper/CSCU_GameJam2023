@@ -17,8 +17,9 @@ public class PlayerMovement : MonoBehaviour {
     private Vector3 nextPosition;
     private Vector3 nextPositionNormalized;
     [SerializeField]
-    private int nextDirection = (int)directions.left
-        , curLevel = 0;
+    private int nextDirection = (int) directions.left, 
+        prevDirection = (int) directions.left,
+        curLevel = 0;
     bool isPaused = false;
     private enum directions {
         noDir = -1,
@@ -36,14 +37,22 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetKeyDown("r"))
             SceneManager.LoadScene(curLevel);
         if (isPaused) return;
-        if (Input.GetKeyDown("w"))
-            nextDirection = (int) directions.up;
-        if (Input.GetKeyDown("s"))
-            nextDirection = (int) directions.down;
-        if (Input.GetKeyDown("d"))
-            nextDirection = (int) directions.right;
-        if (Input.GetKeyDown("a"))
-            nextDirection = (int) directions.left;
+        if (Input.GetKeyDown("w")) {
+            prevDirection = nextDirection;
+            nextDirection = (int)directions.up;
+        }
+        if (Input.GetKeyDown("s")) {
+            prevDirection = nextDirection;
+            nextDirection = (int)directions.down;
+        }
+        if (Input.GetKeyDown("d")) {
+            prevDirection = nextDirection;
+            nextDirection = (int)directions.right;
+        }
+        if (Input.GetKeyDown("a")) {
+            prevDirection = nextDirection;
+            nextDirection = (int)directions.left;
+        }
 
         if (nextDirection == (int) directions.noDir) {
             //stay still
@@ -51,6 +60,7 @@ public class PlayerMovement : MonoBehaviour {
         else if (Vector3.Distance(transform.position, nextPosition) > MOVE_SPEED * 0.01) {
             transform.position = transform.position - nextPositionNormalized * MOVE_SPEED * Time.deltaTime;
         } else {
+            if (prevDirection != nextDirection) SoundManager.PlaySound(SoundManager.Sound.Player_Turn);
             transform.position = nextPosition;
             GameObject tempObject = nextNode.getNode(nextDirection);
             nextNode = tempObject.GetComponent<Node>();
@@ -69,7 +79,7 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
     public void setPaused(bool set) {
-        if (set) nextDirection = (int)directions.noDir;
+        if (set) { nextDirection = (int)directions.noDir; prevDirection = nextDirection; }
         isPaused = set;
     }
     private void lose() {
@@ -77,8 +87,10 @@ public class PlayerMovement : MonoBehaviour {
         isPaused = true;
         if (roundController.isWin())
             Debug.Log("you win!");
-        else 
+        else {
             Debug.Log("you died");
+            SoundManager.PlaySound(SoundManager.Sound.Player_Death);
+        }
         StartCoroutine(roundController.changeScene(0));
         //death noise
         //death animation
