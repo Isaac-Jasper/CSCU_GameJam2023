@@ -75,6 +75,7 @@ public class PlayerMovement : MonoBehaviour {
             Debug.Log("you win!");
         else 
             Debug.Log("you died");
+        StartCoroutine(roundController.changeScene(0));
         //death noise
         //death animation
     }
