@@ -44,9 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a56c03a5774634285bd425c6be245d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeInSpeed: 0.1
-  time: 0.01
-  transitionSpeed: 0.1
+  fadeInSpeed: 0.05
+  transitionSpeed: 9.8
   roundTiles:
   - {fileID: 0}
   - {fileID: 0}
@@ -54,3 +53,5 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   fadeObject: {fileID: 0}
+  player: {fileID: 0}
+  textFadeGroup: {fileID: 0}

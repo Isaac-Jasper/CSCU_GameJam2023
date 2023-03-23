@@ -7,16 +7,17 @@ public class RoundController : MonoBehaviour
 {
     [SerializeField]
     private float fadeInSpeed,
-        time,
         transitionSpeed;
     [SerializeField]
     private GameObject[] roundTiles;
     [SerializeField]
-    private GameObject fadeObject;
-    private CanvasGroup canvasGroupFade;
+    private GameObject fadeObject, player;
+    [SerializeField]
+    private CanvasGroup textFadeGroup;
+    private PlayerMovement playerMovement;
     int currentRound = 0;
     private void Start() {
-        canvasGroupFade = fadeObject.GetComponent<CanvasGroup>();
+        playerMovement = player.GetComponent<PlayerMovement>();
         StartCoroutine(startScene());
     }
     public void fadeNextIn() {
@@ -30,28 +31,42 @@ public class RoundController : MonoBehaviour
         while (color < 1) {
             color += fadeInSpeed;
             tilemap.color = new Color(1, 1, 1, color);
-            yield return new WaitForSeconds(time);
+            yield return null;
         }
     }
     public bool isWin() {
         return currentRound == roundTiles.Length - 1;
     }
     public IEnumerator changeScene(int scene) {
-        Vector2 endPos = new(0, 0);
-        Debug.Log(Vector2.Distance(endPos, fadeObject.transform.position));
-        while (Vector2.Distance(endPos, fadeObject.transform.position) > 0.1) {
-            fadeObject.transform.position = Mathf.Lerp(endPos.y, fadeObject.transform.position.y, transitionSpeed) * Vector2.up;
+        playerMovement.setPaused(true);
+        Vector2 endPos = new(0, 1);
+        while (Vector2.Distance(endPos, fadeObject.transform.position) > 1) {
+            fadeObject.transform.position = Mathf.Lerp(endPos.y, fadeObject.transform.position.y, Mathf.Log10(transitionSpeed)) * Vector2.up;
             yield return null;
         }
+        playerMovement.setPaused(true);
     }
     private IEnumerator startScene() {
-        Vector2 endPos = new(0, -13);
-        while (Vector2.Distance(endPos, fadeObject.transform.position) > 0.1) {
-            fadeObject.transform.position = Mathf.Lerp(endPos.y, fadeObject.transform.position.y, transitionSpeed) * Vector2.up;
+        playerMovement.setPaused(true);
+        while (textFadeGroup.alpha < 0.9) {
+            textFadeGroup.alpha = Mathf.Lerp(textFadeGroup.alpha, 1, transitionSpeed / 10 * Time.deltaTime);
             yield return null;
         }
-    }
-    private IEnumerator resartScene() {
-        
+        textFadeGroup.alpha = 1;
+
+        yield return new WaitForSeconds(1);
+
+        while (textFadeGroup.alpha > 0.05) {
+            textFadeGroup.alpha = Mathf.Lerp(textFadeGroup.alpha, 0, transitionSpeed / 10 * Time.deltaTime);
+            yield return null;
+        }
+        textFadeGroup.alpha = 0;
+        yield return new WaitForSeconds(0.5f);
+        Vector2 endPos = new(0, -14);
+        while (Vector2.Distance(endPos, fadeObject.transform.position) > 1) {
+            fadeObject.transform.position = Mathf.Lerp(endPos.y, fadeObject.transform.position.y, Mathf.Log10(transitionSpeed)) * Vector2.up;
+            yield return null;
+        }
+        playerMovement.setPaused(false);
     }
 }

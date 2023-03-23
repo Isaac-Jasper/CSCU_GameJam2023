@@ -68,8 +68,12 @@ public class PlayerMovement : MonoBehaviour {
             roundController.fadeNextIn();
         }
     }
+    public void setPaused(bool set) {
+        if (set) nextDirection = (int)directions.noDir;
+        isPaused = set;
+    }
     private void lose() {
-        nextDirection = (int) directions.noDir;
+        setPaused(true);
         isPaused = true;
         if (roundController.isWin())
             Debug.Log("you win!");
