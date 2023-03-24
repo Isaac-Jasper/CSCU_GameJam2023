@@ -19,10 +19,11 @@ public class GameSoundController : MonoBehaviour
 
     private void Awake() {
         if (i != null && i != this) {
-            Destroy(this);
+            Destroy(this.gameObject);
         } else {
             i = this;
         }
+        DontDestroyOnLoad(this.gameObject);
         SoundManager.Initialize();
     }
     private void Update() {

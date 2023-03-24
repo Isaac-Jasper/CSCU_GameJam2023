@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour {
+    
     [SerializeField]
     private float TILE_SIZE = 1.5f
                 , MOVE_SPEED = 1;
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour {
         left,
         right
     }
+
     private void Start() {
         nextNode = nextObject.GetComponent<Node>();
         nextPosition = nextObject.transform.position;
@@ -35,7 +37,7 @@ public class PlayerMovement : MonoBehaviour {
     }
     void Update() {
         if (Input.GetKeyDown("r"))
-            SceneManager.LoadScene(curLevel);
+            SceneController.i.RestartScene();
         if (isPaused) return;
         if (Input.GetKeyDown("w")) {
             prevDirection = nextDirection;
@@ -85,14 +87,12 @@ public class PlayerMovement : MonoBehaviour {
     private void lose() {
         setPaused(true);
         isPaused = true;
-        if (roundController.isWin())
-            Debug.Log("you win!");
-        else {
-            Debug.Log("you died");
+        if (roundController.isWin()) {
+            StartCoroutine(SceneController.i.changeScene(curLevel + 1));
+        } else {
             SoundManager.PlaySound(SoundManager.Sound.Player_Death);
+            StartCoroutine(SceneController.i.RestartScene());
         }
-        StartCoroutine(roundController.changeScene(0));
-        //death noise
         //death animation
     }
 }

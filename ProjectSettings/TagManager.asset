@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Wall
   - food
+  - IntroText
+  - CrossFade
   layers:
   - Default
   - TransparentFX
